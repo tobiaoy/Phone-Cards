@@ -5,6 +5,11 @@ public class Global25Card extends PhoneCard {
 		super.setBalance(25);
 }
 
+     public Global25Card(long no, int passwd){
+        super(no, passwd);
+        bal = 25.0;
+    }
+    
 	// Overrides the getLimit method in PhoneCard
 	public int getLimit(String zone) {
     return (int)(super.getBalance() / costPerMin(zone));
@@ -12,8 +17,13 @@ public class Global25Card extends PhoneCard {
 	
     // Overrides the charge method in PhoneCard
 	public boolean charge (int minutes, String zone) {
-		minutes = (int)(super.getBalance() / costPerMin(zone));
-		 	return (minutes > 0);
+	double charge = minutes * costPerMin(zone);
+        if (charge > bal){
+            return false;
+        }
+        else{
+            return true;
+        }
         }
 
 	// Overrides the abstract method allowed
