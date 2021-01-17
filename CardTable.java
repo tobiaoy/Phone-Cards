@@ -17,15 +17,19 @@ public class CardTable {
         return true;
     }
 
+    // This function returns the PhoneCard object represented by the no passed
+    // If the number isnt valid, then returns null
     public PhoneCard get(long no) { // YOU MUST FILL THIS PART
         // OF THE DEFINITION
-    	no = ct[current].getNumber();
-    	if (no < 0) {
-    	return null;
-    } else {
-    	return ct[current];
+    	//no = ct[current].getNumber();
+        for (int i=0; i<ctSize; i++ )
+        {
+            if (no == ct[i].getNumber()){
+                return ct[i];
+            }  
+        }
+        return null;
     }
-       }
     
 
     public PhoneCard first() {

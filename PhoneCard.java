@@ -4,7 +4,7 @@ abstract public class PhoneCard {
 
 	private long no;
 	private int passwd;
-	private double bal;
+	protected double bal;
 	
 	//constructor
 	public PhoneCard(long no, int passwd, double bal) {
@@ -24,7 +24,24 @@ abstract public class PhoneCard {
 		
 		this.bal = bal;
 	}
-	
+    
+    // alt constructor
+	public PhoneCard(long no, int passwd){
+        if (no < 0) {
+			System.out.println("that value is invalid");
+		}
+		else {
+			this.no = no;
+		}
+		
+		if (passwd < 0) {
+			System.out.println("that value is invalid");
+		}
+		else {
+			this.passwd = passwd;
+		}
+    }
+    
 // ACCESSORS
 	
 	//an accessor returning the card number
@@ -38,11 +55,12 @@ abstract public class PhoneCard {
 	}
 	
 	//an accessor returning the card balance
-	public double  getBalance() {
+	public double getBalance() {
 		return bal;
 	}
 	
-	//a mutator to set the card balance
+	
+    //a mutator to set the card balance
 	public void setBalance(double b) {
 		b = bal;
 	}

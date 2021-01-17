@@ -4,7 +4,11 @@ public class Global10Card extends PhoneCard{
 		super(no, passwd, bal);
 		super.setBalance(10.0);
 }
-	
+	 public Global10Card(long no, int passwd){
+        super(no, passwd);
+        bal = 10.0;
+    }
+    
     // Overrides the getLimit method in PhoneCard
 	public int getLimit(String zone) {
     return (int)(super.getBalance() / costPerMin(zone));
@@ -12,10 +16,14 @@ public class Global10Card extends PhoneCard{
 	
     // Overrides the charge method in PhoneCard
 	public boolean charge (int minutes, String zone) {
-		minutes = (int)(super.getBalance() / costPerMin(zone));
-		 	return (minutes > 0);
+	double charge = minutes * costPerMin(zone);
+        if (charge > bal){
+            return false;
         }
-	
+        else{
+            return true;
+        }
+    }
 	// Overrides the abstract method allowed
 	public boolean allowed(String zone) {
 		return CallZone.isValidZone(zone);
@@ -52,7 +60,7 @@ public class Global10Card extends PhoneCard{
 	
 	// Overrides the abstract method deductWeeklyFee
 	public void deductWeeklyFee() {
-		bal -= 1.00;	
+	bal -= 1.00;	
 	}
     
 }

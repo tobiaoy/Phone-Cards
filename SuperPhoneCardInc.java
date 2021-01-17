@@ -5,6 +5,7 @@ ITEC 2610 Assignment 1
 
 ****************************************************************************/
 
+import java.text.*;
 import java.util.Scanner;
 
 public class SuperPhoneCardInc {
@@ -24,6 +25,8 @@ public class SuperPhoneCardInc {
             done = true;
         }
        
+        // COMMAND PROMPTS
+        
         while (!done) {
             System.out.println("Input: " + line);
             Scanner inl = new Scanner(line);
@@ -31,6 +34,8 @@ public class SuperPhoneCardInc {
             if (inl.hasNext()) {
                 command = inl.next();
             }
+            
+            // 'ADD' COMMAND TO ADD PHONE CARDS
             
             if (command.equals("add")) {
                 boolean invalidArgs = false;
@@ -86,6 +91,8 @@ public class SuperPhoneCardInc {
                     System.out.println("Result: added card " + no);
                 }
             
+                // 'GET BALANCE' COMMAND TO GET THE BALANCE OF A PHONE CARD
+                
             } else if (command.equals("getBalance")) {
                 
             	boolean invalidArgs = false;
@@ -124,6 +131,9 @@ public class SuperPhoneCardInc {
                             no, card.getBalance());
                     }
                 }
+            
+            // 'GET LIMIT' COMMAND TO GET THE NUMBER OF MINUTES A PHONE CARD HAS IN A PARTICULAR CALL ZONE
+            
             } else if (command.equals("getLimit")) { // YOU MUST FILL THIS PART
                 // OF THE DEFINITION
             	boolean invalidArgs = false;
@@ -164,25 +174,23 @@ public class SuperPhoneCardInc {
                     } 		
                     	else
                     		if (!card.allowed(callZone)) {
-                    			System.out.println("Error: card" + no + "not allowed for zone " + callZone );
+                    			System.out.println("Error: card " + no + " not allowed for zone " + callZone );
                     		}
                     		else {
                     			System.out.println("Result: card " + no + " limit for zone " + callZone + " is " +  card.getLimit(callZone) +  " minutes");
                     		}
                 }
                 
-                
-                
-                
-                
-                
-                
+                // CHARGE COMMAND TO DETERMINE WHETHER A PHONE CARD SHOULD BE CHARGED AND WHAT THE CHARGE IS
+                   
             } else if (command.equals("charge")) { // YOU MUST FILL THIS PART
                 // OF THE DEFINITION
             	boolean invalidArgs = false;
                 long no = 0;
                 int passwd = 0;
                 String callZone = "";
+                int minutes = 1;
+                
                 if (inl.hasNextLong()) {
                     no = inl.nextLong();
                 } else {
@@ -200,40 +208,56 @@ public class SuperPhoneCardInc {
                 	callZone = inl.next();
                 }
                 else {
-                	invalidArgs = true;
+                    invalidArgs = true;
                 }
                 
-                if (invalidArgs) {
-                	System.out.println("Error: invalid arguments for charge command");
+                if (!invalidArgs && inl.hasNextInt()){
+                    minutes = inl.nextInt();
+                }
+                else {
+                    invalidArgs = true;
+                }
+                
+                if (invalidArgs){
+                    System.out.println("Invalid arguments for charge command.");
                 }
                 
                 else {
                     PhoneCard card = ct.get(no);
-                    int minutes = (int)(card.getBalance() / card.costPerMin(callZone));
-                    double charge = card.costPerMin(callZone) * minutes;
-                    double newBal = card.getBalance() - charge;
-                    if (card == null) {
-                        System.out.println("Error: card no " + no + " does not exist");
-                    } else 
-                    	if (card.getPassword() != passwd) {
-                        System.out.println("Error: password " + passwd + " incorrect");
-                    } 		
-                    	else
-                    		if (!card.allowed(callZone)) {
-                    			System.out.println("Error: card" + no + "not allowed for zone " + callZone );
-                    		}
-
-                    if(!card.charge(minutes, callZone)) {
-                    					System.out.println("Error: card " +  no +  " limit for zone " + callZone + " is " + minutes +  " minutes");
-                    				}
-                    else {
-                    	System.out.println("Result: card " + no +  " charged " + charge +", new balance is " + newBal);
+                    boolean isAllowed = true;
+                    
+                    if (card == null){
+                        System.out.println("Error: card no " + no + "does not exist");
+                        isAllowed = false;
                     }
-                
+                    else if (card.getPassword() != passwd){
+                        System.out.println("Error: password " + passwd + " incorrect");
+                        isAllowed = false;
+                    }
+                    else if (!card.allowed(callZone)){
+                        System.out.println("Error: card " + no + " not allowed for zone " + callZone );
+                        isAllowed = false;
+                    }
+                    else 
+                       
+                      if  (isAllowed)
+                      {
+                        double charge = minutes * card.costPerMin(callZone);
+                    double newBal = card.getBalance() - charge;
+                    NumberFormat DF = new DecimalFormat("0.##");
+                     
+                        if (!card.charge(minutes, callZone)){
+                         System.out.println("Error: card " +  no +  " limit for zone " + callZone + " is " + card.getLimit(callZone) +  " minutes");
+                    } else {
+                    
+                        System.out.println("Result: card " + no +  " charged " + DF.format(charge) +", new balance is " + DF.format(newBal));
+                        }
+                        }
                 }
-            
+                // 'DEDUCTWEEKLYFEE' COMMAND TO DEDUCT THE WEEKLY FEE BASED ON THE TYPE OF PHONE CARD
+                
             }
-                else if (command.equals("deductWeeklyFee")) {
+            else if (command.equals("deductWeeklyFee")) {
                 PhoneCard card = ct.first();
                 while (card != null) {
                     card.deductWeeklyFee();
@@ -243,6 +267,7 @@ public class SuperPhoneCardInc {
                 }
                 System.out.println("Result: weekly fees deducted");
            
+                // 'PRINTALL' COMMAND TO PRINT OUT ALL THE PHONE CARDS    
                 
                 } else if (command.equals("printAll")) {
                 PhoneCard card = ct.first();
